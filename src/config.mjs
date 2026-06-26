@@ -15,6 +15,8 @@ export const DEFAULT_CONFIG = {
 		// as the bareword-reference corpus (config files, build tooling).
 		scan: [ 'src', 'tools' ],
 		extensions: [ '.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs', '.cts', '.mts' ],
+		// Stylesheets scanned for @import / @use / @forward / @tailwind references.
+		styleExtensions: [ '.css', '.scss', '.sass', '.less' ],
 		// Extra root files to fold into the reference corpus (configs reference
 		// loaders/plugins/presets by bareword, not by import).
 		referenceFiles: [

@@ -97,7 +97,7 @@ const LOCK_RE = /(^|[/\\])(package-lock\.json|composer\.lock|.*\.lock|yarn\.lock
 // Root-level files that legitimately reference packages by name (build configs,
 // lint configs, tool configs). Matched by name regardless of project.
 const CONFIG_NAME_RE =
-	/(^\.|\.config\.|rc(\.|$)|eslint|stylelint|prettier|babel|postcss|tailwind|webpack|jest|playwright|tsconfig|phpstan|phpcs|rector|phpunit|grunt)/i;
+	/(^\.|^config[.-]|\.config\.|rc(\.|$)|eslint|stylelint|prettier|babel|postcss|tailwind|webpack|jest|playwright|tsconfig|phpstan|phpcs|rector|phpunit|grunt)/i;
 
 /**
  * Collect depth-0 config-like files at the project root, so reference scanning

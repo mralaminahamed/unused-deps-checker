@@ -53,9 +53,15 @@ fs.mkdirSync( path.join( dir, 'vendor/acme/widget' ), { recursive: true } );
 fs.writeFileSync(
 	path.join( dir, 'package.json' ),
 	JSON.stringify( {
-		dependencies: { used: '1.0.0', unusedlib: '1.0.0' },
+		dependencies: {
+			used: '1.0.0',
+			unusedlib: '1.0.0',
+			tailwindcss: '1.0.0', // via stylesheet @import
+			'@fontsource/x': '1.0.0', // via stylesheet @import (scoped)
+		},
 		devDependencies: {
 			'sass-loader': '1.0.0', // referenced in webpack config string
+			'asset-only-lib': '1.0.0', // copied via asset-management config
 			'never-used': '1.0.0',
 			'@types/node': '1.0.0', // ignored by default
 		},
@@ -67,8 +73,17 @@ fs.writeFileSync(
 	"import { thing } from 'used';\nrequire('used/sub');\n"
 );
 fs.writeFileSync(
+	path.join( dir, 'src/app.scss' ),
+	'@import "tailwindcss";\n@use "@fontsource/x/400.css";\n@use "./local";\n'
+);
+fs.writeFileSync(
 	path.join( dir, 'webpack.config.js' ),
 	"module.exports = { module: { rules: [ { use: 'sass-loader' } ] } };\n"
+);
+// Asset-management config (manage-asset-node_modules style) — lists pkgs by name.
+fs.writeFileSync(
+	path.join( dir, 'config.node_modules.json' ),
+	JSON.stringify( { packages: [ { name: 'asset-only-lib', destination: 'x' } ] } )
 );
 
 // PHP fixture
@@ -95,6 +110,9 @@ assert( statusOf( js.deps, 'unusedlib' ) === 'unused', 'unimported dep → unuse
 assert( statusOf( js.deps, 'sass-loader' ) === 'config', 'config-referenced dep → config' );
 assert( statusOf( js.deps, 'never-used' ) === 'unused', 'no reference → unused' );
 assert( statusOf( js.deps, '@types/node' ) === 'ignored', '@types/* → ignored' );
+assert( statusOf( js.deps, 'tailwindcss' ) === 'used', 'stylesheet @import → used' );
+assert( statusOf( js.deps, '@fontsource/x' ) === 'used', 'scoped stylesheet @use → used' );
+assert( statusOf( js.deps, 'asset-only-lib' ) === 'config', 'asset-management config name → config' );
 
 process.stdout.write( 'PHP scan\n' );
 const php = scanPhp( dir, DEFAULT_CONFIG.php );

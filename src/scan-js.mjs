@@ -21,6 +21,10 @@ const RE_IMPORT_DYNAMIC = /import\s*\(\s*['"]([^'"]+)['"]\s*\)/g;
 const RE_REQUIRE = /require\s*\(\s*['"]([^'"]+)['"]\s*\)/g;
 const RE_REQUIRE_RESOLVE = /require\.resolve\s*\(\s*['"]([^'"]+)['"]\s*\)/g;
 
+// CSS / SCSS / SASS / LESS: @import "pkg", @use 'pkg', @forward 'pkg',
+// @import url("pkg/...") — webpack `~pkg` tilde supported.
+const RE_STYLE_AT = /@(?:import|use|forward)\s+(?:\([^)]*\)\s*)?(?:url\(\s*)?['"]([^'")]+)['"]/g;
+
 /** Turn an import specifier into its owning package name (or null if local). */
 export function packageFromSpecifier( spec ) {
 	if ( ! spec || spec.startsWith( '.' ) || spec.startsWith( '/' ) ) {
@@ -33,6 +37,30 @@ export function packageFromSpecifier( spec ) {
 		return parts.length >= 2 ? `${ parts[ 0 ] }/${ parts[ 1 ] }` : clean;
 	}
 	return clean.split( '/' )[ 0 ];
+}
+
+/** Normalise a stylesheet specifier to a package name (or null if local/builtin). */
+function packageFromStyleSpecifier( spec ) {
+	const clean = spec.replace( /^~/, '' ); // strip webpack tilde
+	if ( clean.startsWith( 'sass:' ) ) {
+		return null; // Sass built-in module
+	}
+	return packageFromSpecifier( clean );
+}
+
+function extractStyleSpecifiers( text, into ) {
+	RE_STYLE_AT.lastIndex = 0;
+	let m;
+	while ( ( m = RE_STYLE_AT.exec( text ) ) !== null ) {
+		const pkg = packageFromStyleSpecifier( m[ 1 ] );
+		if ( pkg ) {
+			into.add( pkg );
+		}
+	}
+	// Tailwind directives imply the tailwindcss package even without an @import.
+	if ( /@tailwind\b|@apply\b/.test( text ) ) {
+		into.add( 'tailwindcss' );
+	}
 }
 
 function extractSpecifiers( text, into ) {
@@ -72,10 +100,18 @@ export function scanJs( root, cfg ) {
 	// Build the import + reference corpus.
 	const codeFiles = collectFiles( root, cfg.scan, { extensions: cfg.extensions } );
 	const used = new Set();
+	const styleUsed = new Set();
 	const refParts = [];
 	for ( const file of codeFiles ) {
 		const text = readSafe( file );
 		extractSpecifiers( text, used );
+		refParts.push( text );
+	}
+	// Stylesheets — @import / @use / @forward / @tailwind reference packages too.
+	const styleFiles = collectFiles( root, cfg.scan, { extensions: cfg.styleExtensions || [] } );
+	for ( const file of styleFiles ) {
+		const text = readSafe( file );
+		extractStyleSpecifiers( text, styleUsed );
 		refParts.push( text );
 	}
 	const refFiles = new Set();
@@ -104,8 +140,10 @@ export function scanJs( root, cfg ) {
 				deps.push( { name, section, status: 'ignored', reason: 'ignore list' } );
 			} else if ( used.has( name ) ) {
 				deps.push( { name, section, status: 'used', reason: 'imported' } );
+			} else if ( styleUsed.has( name ) ) {
+				deps.push( { name, section, status: 'used', reason: 'stylesheet @import/@use' } );
 			} else if ( barewordPresent( referenceText, name ) ) {
-				deps.push( { name, section, status: 'config', reason: 'config/script reference' } );
+				deps.push( { name, section, status: 'config', reason: 'config/script/asset reference' } );
 			} else {
 				deps.push( { name, section, status: 'unused', reason: 'no import or reference found' } );
 			}
@@ -114,6 +152,9 @@ export function scanJs( root, cfg ) {
 
 	return {
 		deps,
-		stats: { filesScanned: codeFiles.length, specifiers: used.size },
+		stats: {
+			filesScanned: codeFiles.length + styleFiles.length,
+			specifiers: used.size + styleUsed.size,
+		},
 	};
 }
