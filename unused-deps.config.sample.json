@@ -1,0 +1,33 @@
+{
+  "js": {
+    "enabled": true,
+    "scan": [ "src", "tools" ],
+    "extensions": [ ".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs" ],
+    "referenceFiles": [
+      "package.json",
+      "webpack.config.ts",
+      "postcss.config.js",
+      "tailwind.config.js",
+      "tsconfig.json",
+      "playwright.config.ts"
+    ],
+    "ignorePackages": [ "@types/*" ]
+  },
+  "php": {
+    "enabled": true,
+    "scan": [ "includes", "tests" ],
+    "referenceFiles": [
+      "composer.json",
+      "phpstan.neon",
+      "phpcs.xml.dist",
+      "rector.php"
+    ],
+    "ignorePackages": [
+      "phpstan/*",
+      "phpunit/*",
+      "wp-coding-standards/*",
+      "php-stubs/*",
+      "*-stubs"
+    ]
+  }
+}

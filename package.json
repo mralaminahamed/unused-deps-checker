@@ -1,0 +1,42 @@
+{
+  "name": "@mralaminahamed/unused-deps-checker",
+  "version": "1.0.0",
+  "description": "Find unused package.json and composer.json dependencies. Zero runtime dependencies, drops in as a git submodule.",
+  "type": "module",
+  "bin": {
+    "unused-deps-checker": "bin/check-deps.mjs"
+  },
+  "exports": {
+    ".": "./bin/check-deps.mjs",
+    "./scan-js": "./src/scan-js.mjs",
+    "./scan-php": "./src/scan-php.mjs"
+  },
+  "scripts": {
+    "check": "node bin/check-deps.mjs",
+    "selftest": "node test/run.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "dependencies",
+    "unused",
+    "depcheck",
+    "package.json",
+    "composer",
+    "wordpress",
+    "audit"
+  ],
+  "license": "MIT",
+  "author": "Al Amin Ahamed",
+  "homepage": "https://github.com/mralaminahamed/unused-deps-checker",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mralaminahamed/unused-deps-checker.git"
+  },
+  "files": [
+    "bin",
+    "src",
+    "unused-deps.config.sample.json"
+  ]
+}
