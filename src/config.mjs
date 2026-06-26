@@ -12,8 +12,9 @@ export const DEFAULT_CONFIG = {
 	js: {
 		enabled: true,
 		// Files OR directories scanned for `import`/`require` specifiers AND used
-		// as the bareword-reference corpus (config files, build tooling).
-		scan: [ 'src', 'tools' ],
+		// as the bareword-reference corpus (config files, build tooling). Includes
+		// `tests` so test-only devDependencies (jest, testing-library) count as used.
+		scan: [ 'src', 'tools', 'tests' ],
 		extensions: [ '.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs', '.cts', '.mts' ],
 		// Stylesheets scanned for @import / @use / @forward / @tailwind references.
 		styleExtensions: [ '.css', '.scss', '.sass', '.less' ],

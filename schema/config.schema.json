@@ -24,7 +24,7 @@
           "type": "array",
           "description": "Directories or files walked for import/require specifiers and stylesheet @import/@use references. Relative to the project root.",
           "items": { "type": "string" },
-          "default": [ "src", "tools" ]
+          "default": [ "src", "tools", "tests" ]
         },
         "extensions": {
           "type": "array",

@@ -4,6 +4,18 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0]
+
+### Added
+- Detect TypeScript `declare module 'pkg/subpath'` ambient augmentations as a
+  package use (e.g. `@tippyjs/react` declared in a `.d.ts`).
+- `tests` is part of the default `scan`, so test-only devDependencies (jest,
+  @testing-library/*, dotenv in e2e config) count as used.
+
+### Fixed
+- Eliminates false positives surfaced by whole-tree validation: dependencies used
+  only in tests or via `declare module` are no longer reported as unused.
+
 ## [1.2.0]
 
 ### Added
@@ -41,6 +53,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `--strict` (CI exit code), `--json`, `--js-only` / `--php-only` flags.
 - Self-test fixture and MIT license.
 
+[1.3.0]: https://github.com/mralaminahamed/unused-deps-checker/releases/tag/v1.3.0
 [1.2.0]: https://github.com/mralaminahamed/unused-deps-checker/releases/tag/v1.2.0
 [1.1.0]: https://github.com/mralaminahamed/unused-deps-checker/releases/tag/v1.1.0
 [1.0.0]: https://github.com/mralaminahamed/unused-deps-checker/releases/tag/v1.0.0

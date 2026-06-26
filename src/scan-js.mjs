@@ -20,6 +20,8 @@ const RE_IMPORT_BARE = /import\s*['"]([^'"]+)['"]/g;
 const RE_IMPORT_DYNAMIC = /import\s*\(\s*['"]([^'"]+)['"]\s*\)/g;
 const RE_REQUIRE = /require\s*\(\s*['"]([^'"]+)['"]\s*\)/g;
 const RE_REQUIRE_RESOLVE = /require\.resolve\s*\(\s*['"]([^'"]+)['"]\s*\)/g;
+// TypeScript ambient module augmentation: declare module 'pkg/subpath';
+const RE_DECLARE_MODULE = /declare\s+module\s+['"]([^'"]+)['"]/g;
 
 // CSS / SCSS / SASS / LESS: @import "pkg", @use 'pkg', @forward 'pkg',
 // @import url("pkg/...") — webpack `~pkg` tilde supported.
@@ -70,6 +72,7 @@ function extractSpecifiers( text, into ) {
 		RE_IMPORT_DYNAMIC,
 		RE_REQUIRE,
 		RE_REQUIRE_RESOLVE,
+		RE_DECLARE_MODULE,
 	] ) {
 		re.lastIndex = 0;
 		let m;

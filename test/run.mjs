@@ -58,6 +58,7 @@ fs.writeFileSync(
 			unusedlib: '1.0.0',
 			tailwindcss: '1.0.0', // via stylesheet @import
 			'@fontsource/x': '1.0.0', // via stylesheet @import (scoped)
+			'ambient-lib': '1.0.0', // via `declare module`
 		},
 		devDependencies: {
 			'sass-loader': '1.0.0', // referenced in webpack config string
@@ -71,6 +72,10 @@ fs.writeFileSync(
 fs.writeFileSync(
 	path.join( dir, 'src/index.js' ),
 	"import { thing } from 'used';\nrequire('used/sub');\n"
+);
+fs.writeFileSync(
+	path.join( dir, 'src/types.d.ts' ),
+	"declare module 'ambient-lib/headless';\n"
 );
 fs.writeFileSync(
 	path.join( dir, 'src/app.scss' ),
@@ -112,6 +117,7 @@ assert( statusOf( js.deps, 'never-used' ) === 'unused', 'no reference → unused
 assert( statusOf( js.deps, '@types/node' ) === 'ignored', '@types/* → ignored' );
 assert( statusOf( js.deps, 'tailwindcss' ) === 'used', 'stylesheet @import → used' );
 assert( statusOf( js.deps, '@fontsource/x' ) === 'used', 'scoped stylesheet @use → used' );
+assert( statusOf( js.deps, 'ambient-lib' ) === 'used', 'declare module → used' );
 assert( statusOf( js.deps, 'asset-only-lib' ) === 'config', 'asset-management config name → config' );
 
 process.stdout.write( 'referenceDirs (PHP enqueue by handle)\n' );
