@@ -1,0 +1,12 @@
+# Normalise line endings
+* text=auto eol=lf
+
+# Exclude dev/meta files from the published package tarball
+/.github          export-ignore
+/docs             export-ignore
+/test             export-ignore
+/.editorconfig    export-ignore
+/.gitattributes   export-ignore
+/.gitignore       export-ignore
+/CONTRIBUTING.md  export-ignore
+/CHANGELOG.md     export-ignore

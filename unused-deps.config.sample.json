@@ -1,8 +1,11 @@
 {
+  "$schema": "./schema/config.schema.json",
   "js": {
     "enabled": true,
     "scan": [ "src", "tools" ],
     "extensions": [ ".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs" ],
+    "styleExtensions": [ ".css", ".scss", ".sass", ".less" ],
+    "referenceDirs": [ "includes" ],
     "referenceFiles": [
       "package.json",
       "webpack.config.ts",
@@ -11,7 +14,7 @@
       "tsconfig.json",
       "playwright.config.ts"
     ],
-    "ignorePackages": [ "@types/*" ]
+    "ignorePackages": [ "@types/*", "tslib" ]
   },
   "php": {
     "enabled": true,

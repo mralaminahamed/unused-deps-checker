@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/mralaminahamed/unused-deps-checker/schema/config.schema.json",
+  "title": "unused-deps-checker configuration",
+  "description": "Schema for unused-deps.config.json — configures the JS (package.json) and PHP (composer.json) dependency scanners.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema reference for editor IntelliSense."
+    },
+    "js": {
+      "type": "object",
+      "description": "package.json scanner configuration.",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Toggle the JavaScript ecosystem scan.",
+          "default": true
+        },
+        "scan": {
+          "type": "array",
+          "description": "Directories or files walked for import/require specifiers and stylesheet @import/@use references. Relative to the project root.",
+          "items": { "type": "string" },
+          "default": [ "src", "tools" ]
+        },
+        "extensions": {
+          "type": "array",
+          "description": "Code file extensions (including the dot) read for import extraction.",
+          "items": { "type": "string", "pattern": "^\\." },
+          "default": [ ".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".cts", ".mts" ]
+        },
+        "styleExtensions": {
+          "type": "array",
+          "description": "Stylesheet extensions scanned for @import / @use / @forward / @tailwind references.",
+          "items": { "type": "string", "pattern": "^\\." },
+          "default": [ ".css", ".scss", ".sass", ".less" ]
+        },
+        "referenceDirs": {
+          "type": "array",
+          "description": "Extra directories scanned for bareword references only (NOT import extraction) — e.g. PHP that enqueues copied npm assets by handle.",
+          "items": { "type": "string" },
+          "default": []
+        },
+        "referenceDirExtensions": {
+          "type": "array",
+          "description": "File extensions read inside referenceDirs.",
+          "items": { "type": "string", "pattern": "^\\." },
+          "default": [ ".php", ".json", ".xml", ".neon", ".yml", ".yaml", ".txt" ]
+        },
+        "referenceFiles": {
+          "type": "array",
+          "description": "Extra root files folded into the reference corpus. Root config files (eslint/postcss/webpack/etc.) and config.*.json are auto-discovered already.",
+          "items": { "type": "string" }
+        },
+        "ignorePackages": {
+          "type": "array",
+          "description": "Package names or `*`-globs never reported (e.g. \"@types/*\").",
+          "items": { "type": "string" },
+          "default": [ "@types/*" ]
+        }
+      }
+    },
+    "php": {
+      "type": "object",
+      "description": "composer.json scanner configuration.",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Toggle the PHP ecosystem scan.",
+          "default": true
+        },
+        "scan": {
+          "type": "array",
+          "description": "PHP source roots searched for `use Namespace\\` / `Namespace\\` references.",
+          "items": { "type": "string" },
+          "default": [ "includes", "tests" ]
+        },
+        "referenceFiles": {
+          "type": "array",
+          "description": "Config files (phpstan.neon, phpcs.xml.dist, rector.php …) where dev tooling is referenced by name. composer.json contributes only its scripts/extra.",
+          "items": { "type": "string" }
+        },
+        "ignorePackages": {
+          "type": "array",
+          "description": "Dev-only tooling never reported (e.g. \"phpstan/*\", \"*-stubs\"). Platform requirements (php, ext-*) are always skipped automatically.",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}

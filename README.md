@@ -127,12 +127,40 @@ A `config-ref`/`unused` split won't be perfect; treat `unused` as a **lead**:
   `styled-components` with no imports) are the prime cleanup targets.
 - Add anything intentional to `ignorePackages`.
 
+## Configuration & schema
+
+Config is validated by [`schema/config.schema.json`](schema/config.schema.json)
+(JSON Schema draft-07). Reference it from your config for editor autocomplete:
+
+```json
+{ "$schema": "./tools/unused-deps-checker/schema/config.schema.json", "js": { } }
+```
+
+Full key reference: [`docs/configuration.md`](docs/configuration.md). Usage and
+CLI flags: [`docs/usage.md`](docs/usage.md).
+
+## Project layout
+
+```
+bin/check-deps.mjs        # CLI entry
+src/                      # scanners (scan-js, scan-php), walk, config, match, report
+schema/config.schema.json # config JSON Schema
+scripts/validate-config.mjs
+test/run.mjs              # zero-dep self-test
+docs/                     # usage + configuration
+```
+
 ## Development
 
 ```bash
-node test/run.mjs     # self-test (zero deps, no runner)
+node test/run.mjs                 # self-test (zero deps, no runner)
+node scripts/validate-config.mjs  # validate sample config against schema
 node bin/check-deps.mjs --root <some-project>
+# or: npm run validate   (self-test + schema validation)
 ```
+
+CI runs the above on Node 18 / 20 / 22. See [`CONTRIBUTING.md`](CONTRIBUTING.md)
+and [`CHANGELOG.md`](CHANGELOG.md).
 
 ## License
 
