@@ -127,6 +127,12 @@ export function scanJs( root, cfg ) {
 	] ) ) {
 		refFiles.add( abs );
 	}
+	// Reference-only directories (e.g. PHP that enqueues npm assets by handle).
+	for ( const abs of collectFiles( root, cfg.referenceDirs || [], {
+		extensions: cfg.referenceDirExtensions || [],
+	} ) ) {
+		refFiles.add( abs );
+	}
 	for ( const abs of refFiles ) {
 		refParts.push( referenceContribution( path.basename( abs ), readSafe( abs ) ) );
 	}

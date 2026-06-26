@@ -17,6 +17,11 @@ export const DEFAULT_CONFIG = {
 		extensions: [ '.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs', '.cts', '.mts' ],
 		// Stylesheets scanned for @import / @use / @forward / @tailwind references.
 		styleExtensions: [ '.css', '.scss', '.sass', '.less' ],
+		// Extra directories scanned for bareword references only (NOT import
+		// extraction) — e.g. PHP that enqueues copied npm assets by handle.
+		referenceDirs: [],
+		// Extensions read inside referenceDirs.
+		referenceDirExtensions: [ '.php', '.json', '.xml', '.neon', '.yml', '.yaml', '.txt' ],
 		// Extra root files to fold into the reference corpus (configs reference
 		// loaders/plugins/presets by bareword, not by import).
 		referenceFiles: [

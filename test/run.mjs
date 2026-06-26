@@ -114,6 +114,23 @@ assert( statusOf( js.deps, 'tailwindcss' ) === 'used', 'stylesheet @import → u
 assert( statusOf( js.deps, '@fontsource/x' ) === 'used', 'scoped stylesheet @use → used' );
 assert( statusOf( js.deps, 'asset-only-lib' ) === 'config', 'asset-management config name → config' );
 
+process.stdout.write( 'referenceDirs (PHP enqueue by handle)\n' );
+fs.writeFileSync(
+	path.join( dir, 'package.json' ),
+	JSON.stringify( {
+		dependencies: { 'php-enqueued-lib': '1.0.0' },
+		scripts: {},
+	} )
+);
+fs.writeFileSync(
+	path.join( dir, 'includes/Assets.php' ),
+	"<?php\n$assets->enqueue_script( 'php-enqueued-lib' );\n"
+);
+const jsRef = scanJs( dir, { ...DEFAULT_CONFIG.js, referenceDirs: [ 'includes' ] } );
+const jsNoRef = scanJs( dir, { ...DEFAULT_CONFIG.js, referenceDirs: [] } );
+assert( statusOf( jsRef.deps, 'php-enqueued-lib' ) === 'config', 'referenceDir match → config' );
+assert( statusOf( jsNoRef.deps, 'php-enqueued-lib' ) === 'unused', 'without referenceDir → unused' );
+
 process.stdout.write( 'PHP scan\n' );
 const php = scanPhp( dir, DEFAULT_CONFIG.php );
 assert( statusOf( php.deps, 'php' ) === 'platform', 'php → platform' );
